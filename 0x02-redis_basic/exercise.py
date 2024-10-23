@@ -1,7 +1,7 @@
-#!/usr/bin/ env python3
+#!/usr/bin/env python3
 """
 importing redis for the redis server
-Uuid genertates a uniques identifiers
+Uuid generates a uniques identifiers
 union from tying - used for python type annotation
 """
 
