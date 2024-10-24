@@ -17,9 +17,13 @@ def count_calls(method: callable) -> callable:
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrapper that increments the count in redis"""
-        self._redis.incr(method.__qualname__)
-        return method(self, *args, **kwargs)
+        input_key = f"{method.__qualname__):inputs"
+        output_key = f"{method.__qualname__}:outputs"
 
+        self._redis.rpush(input_key, str(args))
+        output = method(self, *args, **kwargs)
+        self._redis.rpush(output_key, str(output))
+        return output
     return wrapper
 
 
@@ -33,6 +37,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Generates a unique key for every value"""
