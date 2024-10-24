@@ -25,10 +25,8 @@ class Cache:
         key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
-
-    def get(self, key: str, fn: Optional[Callable] = None) ->
-    Optional[Union[str, bytes, int, float]]:
-        """Retrieveand apply an optional conversion function."""
+    def get(self, key: str, fn: Optional[Callable] = None) -> Optional[Union[str, bytes, int, float]]:
+        """Retrieve data from Redis and apply an optional conversion function."""
         data = self._redis.get(key)
         if data is None:
             return None
@@ -45,3 +43,4 @@ class Cache:
     def get_int(self, key: str) -> Optional[int]:
         """Retrieve an integer value from Redis."""
         return self.get(key, lambda d: int(d))
+
