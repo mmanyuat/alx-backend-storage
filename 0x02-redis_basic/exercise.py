@@ -17,7 +17,7 @@ def count_calls(method: callable) -> callable:
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         """wrapper that increments the count in redis"""
-        input_key = f"{method.__qualname__):inputs"
+        input_key = f"{method.__qualname__}:inputs"
         output_key = f"{method.__qualname__}:outputs"
 
         self._redis.rpush(input_key, str(args))
