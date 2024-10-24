@@ -8,6 +8,19 @@ Union from typing - used for Python type annotation.
 import redis
 import uuid
 from typing import Union, Optional, Callable
+from functools import wraps
+
+
+def count_calls(method: callable) -> callable:
+    """Decorator to count how many times a method is called"""
+
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """wrapper that increments the count in redis"""
+        self._redis.incr(method.__qualname__)
+        return method(self, *args, **kwargs)
+
+    return wrapper
 
 
 class Cache:
@@ -20,6 +33,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """Generates a unique key for every value"""
         key = str(uuid.uuid4())
